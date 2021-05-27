@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'tech.aomi.common'
-version '1.0.0'
+version '1.0.1'
 
 apply from: 'https://onegit.com/enterprise/public/raw/master/libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
@@ -18,7 +18,7 @@ repositories {
 dependencies {
 
     compileOnly 'tech.aomi.common:exception:1.0.0'
-    compileOnly 'tech.aomi.common:web:1.0.2'
+    compileOnly 'tech.aomi.common:web:1.0.3'
 
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.5.0'
     compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.5.0'
