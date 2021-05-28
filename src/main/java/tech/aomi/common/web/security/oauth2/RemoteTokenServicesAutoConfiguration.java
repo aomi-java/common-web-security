@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
-import org.springframework.security.oauth2.provider.token.UserAuthenticationConverter;
 import tech.aomi.common.web.security.core.userdetails.UserDetailsService;
 import tech.aomi.common.web.security.oauth2.provider.token.UserAuthenticationConverterImpl;
 
@@ -25,21 +24,19 @@ public class RemoteTokenServicesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UserAuthenticationConverter userAuthenticationConverter() {
-        UserAuthenticationConverterImpl converter = new UserAuthenticationConverterImpl();
-        converter.setUserDetailsService(userDetailsService);
-        return converter;
-    }
 
-    @Bean
-    @ConditionalOnMissingBean
     public RemoteTokenServices remoteTokenServices() {
         RemoteTokenServices tokenServices = new RemoteTokenServices();
         tokenServices.setClientId(properties.getClientId());
         tokenServices.setClientSecret(properties.getClientSecret());
         tokenServices.setCheckTokenEndpointUrl(properties.getTokenInfoUri());
+
+        UserAuthenticationConverterImpl userAuthenticationConverter = new UserAuthenticationConverterImpl();
+        userAuthenticationConverter.setUserDetailsService(userDetailsService);
+
+
         DefaultAccessTokenConverter converter = new DefaultAccessTokenConverter();
-        converter.setUserTokenConverter(userAuthenticationConverter());
+        converter.setUserTokenConverter(userAuthenticationConverter);
         tokenServices.setAccessTokenConverter(converter);
         return tokenServices;
     }
