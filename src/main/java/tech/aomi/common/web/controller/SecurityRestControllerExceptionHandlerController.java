@@ -22,7 +22,7 @@ public class SecurityRestControllerExceptionHandlerController {
     @ExceptionHandler({BadCredentialsException.class})
     public Result badCredentialsException(BadCredentialsException e) {
         LOGGER.error("无效的授权信息: {}", e.getMessage(), e);
-        return new Result(ErrorCode.UNAUTHORIZED.getCode(), e.getMessage(), null);
+        return new Result(ErrorCode.INVALID_CREDENTIAL.getCode(), e.getMessage(), null);
     }
 
 }
