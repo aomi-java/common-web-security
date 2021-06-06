@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "aomi-tech.autoconfigure.web.exception.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用Web异常JSON渲染;默认为true",
+      "defaultValue": true
+    }
+  ]
+}
