@@ -1,11 +1,12 @@
 plugins {
     id "io.franzbecker.gradle-lombok" version "2.2"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 group 'tech.aomi.common'
-version '1.0.5'
+version '1.0.6'
 
-apply from: 'https://onegit.com/enterprise/public/raw/master/libraries.gradle'
+apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/idea.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
@@ -15,14 +16,21 @@ repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.4.6'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.3'
+    }
+}
+
 dependencies {
 
     compileOnly 'tech.aomi.common:exception:1.0.0'
-    compileOnly 'tech.aomi.common:web:1.0.3'
+    compileOnly 'tech.aomi.common:web:1.0.5'
 
-    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.5.0'
-    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.5.0'
-
-    compileOnly group: 'org.springframework.cloud', name: 'spring-cloud-starter-oauth2', version: '2.2.5.RELEASE'
+    compileOnly spring_boot.web
+//    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.5.0'
+    compileOnly spring_boot.data_mongodb
+    compileOnly spring_cloud.oauth
 
 }

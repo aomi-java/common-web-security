@@ -24,7 +24,6 @@ public class RemoteTokenServicesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-
     public RemoteTokenServices remoteTokenServices() {
         RemoteTokenServices tokenServices = new RemoteTokenServices();
         tokenServices.setClientId(properties.getClientId());
