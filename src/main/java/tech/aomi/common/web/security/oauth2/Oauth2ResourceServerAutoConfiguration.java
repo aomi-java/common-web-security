@@ -1,8 +1,10 @@
 package tech.aomi.common.web.security.oauth2;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfiguration;
 import org.springframework.security.oauth2.provider.error.OAuth2ExceptionRenderer;
 import tech.aomi.common.web.security.oauth2.provider.error.OAuth2ExceptionRendererImpl;
 
@@ -10,8 +12,9 @@ import tech.aomi.common.web.security.oauth2.provider.error.OAuth2ExceptionRender
  * @author Sean createAt 2021/5/26
  */
 @ConditionalOnProperty(prefix = "aomi-tech.autoconfigure.web.security.oauth2", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnClass(ResourceServerConfiguration.class)
 @Configuration
-public class ResourceServerAutoConfiguration {
+public class Oauth2ResourceServerAutoConfiguration {
 
     /**
      * OAuth2Exception异常处理服务
