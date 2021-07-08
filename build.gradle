@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'tech.aomi.common'
-version '1.0.6'
+version '1.0.7-Alpha.0'
 
 apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
