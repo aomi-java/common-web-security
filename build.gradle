@@ -9,7 +9,9 @@ version '1.0.7-Alpha.0'
 apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/idea.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
+//apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
+apply from: 'https://onegit.com/enterprise/public/raw/master/publish-center.gradle'
+
 
 repositories {
     maven { url "${project.'repo'}" }
@@ -25,8 +27,8 @@ dependencyManagement {
 
 dependencies {
 
-    compileOnly 'tech.aomi.common:exception:1.0.0'
-    compileOnly 'tech.aomi.common:web:1.0.5'
+    compileOnly 'tech.aomi.common:exception:1.0.1-SNAPSHOT'
+    compileOnly 'tech.aomi.common:web:1.0.5_8-SNAPSHOT'
 
     compileOnly spring_boot.web
 //    compileOnly group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version: '2.5.0'

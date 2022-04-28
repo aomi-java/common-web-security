@@ -1,5 +1,6 @@
 package tech.aomi.common.web.security;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class WebSecurityAutoConfiguration {
      * json 处理一登录用户的403错误
      */
     @Bean
+    @ConditionalOnMissingBean
     public AccessDeniedHandler accessDeniedHandler() {
         return new AccessDeniedHandlerImpl();
     }
@@ -29,6 +31,7 @@ public class WebSecurityAutoConfiguration {
      * json 处理未登录用户的403错误
      */
     @Bean
+    @ConditionalOnMissingBean
     public Http403ForbiddenEntryPoint http403ForbiddenEntryPoint() {
         return new Http403ForbiddenImpl();
     }
