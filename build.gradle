@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'tech.aomi.common'
-version '1.0.7-Alpha.0'
+version '1.0.7_0-SNAPSHOT'
 
 apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
 apply from: 'https://onegit.com/enterprise/public/raw/master/java.gradle'
@@ -16,6 +16,9 @@ apply from: 'https://onegit.com/enterprise/public/raw/master/publish-center.grad
 repositories {
     maven { url "${project.'repo'}" }
     mavenCentral()
+    maven {
+        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+    }
 }
 
 dependencyManagement {
