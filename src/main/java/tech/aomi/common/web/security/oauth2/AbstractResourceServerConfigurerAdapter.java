@@ -43,6 +43,7 @@ public class AbstractResourceServerConfigurerAdapter extends ResourceServerConfi
 
     /**
      * 设置异常渲染服务
+     * @return oauth2 异常渲染服务
      */
     protected OAuth2AuthenticationEntryPoint oAuth2AuthenticationEntryPoint() {
         OAuth2AuthenticationEntryPoint oAuth2AuthenticationEntryPoint = new OAuth2AuthenticationEntryPoint();
