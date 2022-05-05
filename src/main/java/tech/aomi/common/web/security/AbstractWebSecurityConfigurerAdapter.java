@@ -9,6 +9,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import tech.aomi.common.web.security.access.AccessDecisionVoterImpl;
 import tech.aomi.common.web.security.access.SecurityServices;
+import tech.aomi.common.web.security.authentication.AuthenticationExceptionEntryPoint;
 
 /**
  * 基本web安全配置
@@ -27,7 +28,7 @@ public abstract class AbstractWebSecurityConfigurerAdapter extends WebSecurityCo
     private AccessDeniedHandler accessDeniedHandler;
 
     @Autowired(required = false)
-    private Http403ForbiddenEntryPoint http403ForbiddenEntryPoint;
+    private AuthenticationExceptionEntryPoint authenticationExceptionEntryPoint;
 
     @Autowired(required = false)
     private SecurityServices securityServices;
@@ -37,8 +38,8 @@ public abstract class AbstractWebSecurityConfigurerAdapter extends WebSecurityCo
         if (null != accessDeniedHandler) {
             http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         }
-        if (null != http403ForbiddenEntryPoint) {
-            http.exceptionHandling().authenticationEntryPoint(http403ForbiddenEntryPoint);
+        if (null != authenticationExceptionEntryPoint) {
+            http.exceptionHandling().authenticationEntryPoint(authenticationExceptionEntryPoint);
         }
         if (null != securityServices) {
             http.securityContext().withObjectPostProcessor(new ObjectPostProcessor<AffirmativeBased>() {
