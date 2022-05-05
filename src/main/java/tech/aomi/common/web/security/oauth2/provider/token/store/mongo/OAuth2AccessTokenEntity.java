@@ -49,6 +49,7 @@ public class OAuth2AccessTokenEntity implements java.io.Serializable {
 
     /**
      * Create an access token from the value provided.
+     * @param value value
      */
     public OAuth2AccessTokenEntity(String value) {
         this.value = value;
@@ -57,7 +58,7 @@ public class OAuth2AccessTokenEntity implements java.io.Serializable {
     /**
      * Copy constructor for access token.
      *
-     * @param accessToken
+     * @param accessToken access token
      */
     public OAuth2AccessTokenEntity(OAuth2AccessToken accessToken) {
         this(accessToken.getValue());

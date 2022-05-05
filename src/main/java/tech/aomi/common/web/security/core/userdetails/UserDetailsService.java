@@ -17,7 +17,7 @@ public interface UserDetailsService extends org.springframework.security.core.us
      *
      * @param args 其他参数
      * @return 用户信息
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException 用户找不到异常
      */
     default UserDetails loadUser(Map<String, ?> args) throws UsernameNotFoundException {
         throw new UsernameNotFoundException("loadUser 方法未实现");
@@ -29,7 +29,7 @@ public interface UserDetailsService extends org.springframework.security.core.us
      * @param id   用户ID
      * @param args 其他参数
      * @return 用户信息
-     * @throws UsernameNotFoundException
+     * @throws UsernameNotFoundException 用户找不到异常
      */
     default UserDetails loadUserById(String id, Map<String, ?> args) throws UsernameNotFoundException {
         throw new UsernameNotFoundException("loadUserById 方法未实现");

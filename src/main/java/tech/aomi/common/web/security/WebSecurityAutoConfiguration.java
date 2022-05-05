@@ -18,7 +18,7 @@ import tech.aomi.common.web.security.authentication.AuthenticationExceptionEntry
 public class WebSecurityAutoConfiguration {
 
     /**
-     * json 处理一登录用户的403错误
+     * @return json 处理一登录用户的403错误
      */
     @Bean
     @ConditionalOnMissingBean
@@ -27,7 +27,7 @@ public class WebSecurityAutoConfiguration {
     }
 
     /**
-     * json 处理授权异常结果
+     * @return json 处理授权异常结果
      */
     @Bean
     @ConditionalOnMissingBean

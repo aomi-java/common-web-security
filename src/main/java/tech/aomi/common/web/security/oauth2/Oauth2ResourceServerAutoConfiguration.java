@@ -17,7 +17,7 @@ import tech.aomi.common.web.security.oauth2.provider.error.OAuth2ExceptionRender
 public class Oauth2ResourceServerAutoConfiguration {
 
     /**
-     * OAuth2Exception异常处理服务
+     * @return OAuth2Exception异常处理服务
      */
     @Bean
     public OAuth2ExceptionRenderer oAuth2ExceptionRenderer() {
