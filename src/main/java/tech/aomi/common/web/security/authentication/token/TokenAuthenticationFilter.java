@@ -59,8 +59,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             TokenAuthenticationToken authRequest = this.authenticationConverter.convert(request);
             if (authRequest == null) {
-                this.logger.trace("Did not process authentication request since failed to find "
-                        + "username and password in Basic Authorization header");
+                this.logger.trace("Did not process authentication request since failed to find token in Authorization header");
                 chain.doFilter(request, response);
                 return;
             }
