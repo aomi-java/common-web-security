@@ -1,0 +1,3 @@
+tech.aomi.common.web.controller.SecurityRestControllerExceptionHandlerController
+tech.aomi.common.web.security.WebSecurityAutoConfiguration
+tech.aomi.common.web.security.oauth2.Oauth2ResourceServerAutoConfiguration

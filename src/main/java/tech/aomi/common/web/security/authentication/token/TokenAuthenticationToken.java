@@ -31,7 +31,6 @@ public class TokenAuthenticationToken extends AbstractAuthenticationToken {
     public TokenAuthenticationToken(String token, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.token = token;
-        this.setAuthenticated(true);
     }
 
 
