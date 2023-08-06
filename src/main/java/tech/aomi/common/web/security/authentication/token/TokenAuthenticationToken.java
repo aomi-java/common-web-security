@@ -41,7 +41,7 @@ public class TokenAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return token;
     }
 
 }
