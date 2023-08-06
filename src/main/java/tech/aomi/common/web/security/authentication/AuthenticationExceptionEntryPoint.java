@@ -1,5 +1,7 @@
 package tech.aomi.common.web.security.authentication;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -10,8 +12,6 @@ import tech.aomi.common.exception.ErrorCode;
 import tech.aomi.common.exception.ServiceException;
 import tech.aomi.common.web.controller.Result;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -28,8 +28,7 @@ public class AuthenticationExceptionEntryPoint implements AuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2) throws IOException {
         Result result;
-        if (null != arg2.getCause() && arg2.getCause() instanceof ServiceException) {
-            ServiceException se = (ServiceException) arg2.getCause();
+        if (null != arg2.getCause() && arg2.getCause() instanceof ServiceException se) {
             result = Result.create(se.getErrorCode(), se.getMessage(), se.getPayload());
         } else {
             result = new Result(ErrorCode.UNAUTHORIZED.getCode(), arg2.getMessage());
