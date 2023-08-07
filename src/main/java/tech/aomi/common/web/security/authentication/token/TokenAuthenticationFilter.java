@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.springframework.core.log.LogMessage;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -14,7 +13,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,7 +36,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private boolean ignoreFailure = false;
 
     private TokenAuthenticationConverter authenticationConverter = new TokenAuthenticationConverter();
-    private SecurityContextRepository securityContextRepository = new RequestAttributeSecurityContextRepository();
+    /**
+     * 持久化Context默认不持久化，这里new只是为了代码逻辑正常执行
+     */
+    private SecurityContextRepository securityContextRepository = new NullSecurityContextRepository();
 
     public TokenAuthenticationFilter(AuthenticationManager authenticationManager) {
         Assert.notNull(authenticationManager, "authenticationManager cannot be null");
@@ -55,7 +57,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-
         try {
             TokenAuthenticationToken authRequest = this.authenticationConverter.convert(request);
             if (authRequest == null) {
@@ -63,9 +64,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 chain.doFilter(request, response);
                 return;
             }
-            String username = authRequest.getName();
 
-            if (authenticationIsRequired(username)) {
+            if (authenticationIsRequired(authRequest.getToken())) {
                 Authentication authResult = this.authenticationManager.authenticate(authRequest);
                 SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
                 context.setAuthentication(authResult);
@@ -73,13 +73,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 if (this.logger.isDebugEnabled()) {
                     this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
                 }
+                // SecurityContextHolderFilter 过滤器会调用securityContextRepository获取
                 this.securityContextRepository.saveContext(context, request, response);
-                onSuccessfulAuthentication(request, response, authResult);
             }
         } catch (AuthenticationException ex) {
             this.securityContextHolderStrategy.clearContext();
             this.logger.debug("Failed to process authentication request", ex);
-            onUnsuccessfulAuthentication(request, response, ex);
             if (this.ignoreFailure) {
                 chain.doFilter(request, response);
             } else {
@@ -99,21 +98,32 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    protected boolean authenticationIsRequired(String username) {
+    /**
+     * Sets the {@link SecurityContextRepository} to save the {@link SecurityContext} on
+     * authentication success. The default action is not to save the
+     * {@link SecurityContext}.
+     *
+     * @param securityContextRepository the {@link SecurityContextRepository} to use.
+     *                                  Cannot be null.
+     */
+    public void setSecurityContextRepository(SecurityContextRepository securityContextRepository) {
+        Assert.notNull(securityContextRepository, "securityContextRepository cannot be null");
+        this.securityContextRepository = securityContextRepository;
+    }
+
+    protected boolean authenticationIsRequired(String token) {
+        // Only reauthenticate if token doesn't match SecurityContextHolder and user
+        // isn't authenticated (see SEC-53)
         Authentication existingAuth = this.securityContextHolderStrategy.getContext().getAuthentication();
-        if (existingAuth == null || !existingAuth.getName().equals(username) || !existingAuth.isAuthenticated()) {
+        if (!(existingAuth instanceof TokenAuthenticationToken) || !existingAuth.isAuthenticated()) {
             return true;
         }
-        return (existingAuth instanceof AnonymousAuthenticationToken);
-    }
+        if (!((TokenAuthenticationToken) existingAuth).getToken().equals(token)) {
+            this.logger.info(LogMessage.format("已存在的授权信息中的token与请求的token不匹配 exist=%s, req=%s", ((TokenAuthenticationToken) existingAuth).getToken(), token));
+            return true;
+        }
 
-
-    protected void onSuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                              Authentication authResult) throws IOException {
-    }
-
-    protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                AuthenticationException failed) throws IOException {
+        return false;
     }
 
     protected boolean isIgnoreFailure() {
