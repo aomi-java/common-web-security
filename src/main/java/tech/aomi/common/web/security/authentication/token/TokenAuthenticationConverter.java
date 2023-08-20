@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 public class TokenAuthenticationConverter implements AuthenticationConverter {
 
@@ -23,12 +24,15 @@ public class TokenAuthenticationConverter implements AuthenticationConverter {
     @Override
     public TokenAuthenticationToken convert(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (token == null) {
+        if (!StringUtils.hasLength(token)) {
             return null;
         }
-        token = token.trim();
+        token = token.replace("Bearer", "").trim();
+        if (token.isEmpty()) {
+            return null;
+        }
 
-        var result = new TokenAuthenticationToken(token);
+        var result = new TokenAuthenticationToken(token.trim());
         result.setDetails(this.authenticationDetailsSource.buildDetails(request));
         return result;
     }
