@@ -3,6 +3,7 @@ package tech.aomi.common.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,6 +19,12 @@ import tech.aomi.common.exception.ErrorCode;
 @ConditionalOnProperty(prefix = "aomi-tech.autoconfigure.web.exception", name = "enabled", havingValue = "true", matchIfMissing = true)
 @RestControllerAdvice
 public class SecurityRestControllerExceptionHandlerController {
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result accessDeniedException(AccessDeniedException e) {
+        LOGGER.error("无权限: {}", e.getMessage(), e);
+        return new Result(ErrorCode.ACCESS_DENIED.getCode(), e.getMessage(), null);
+    }
 
     @ExceptionHandler({BadCredentialsException.class})
     public Result badCredentialsException(BadCredentialsException e) {
