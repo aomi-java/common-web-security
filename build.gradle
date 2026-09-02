@@ -1,44 +1,68 @@
 plugins {
     id 'java'
-    id "io.freefair.lombok" version "8.1.0"
-    id 'io.spring.dependency-management' version '1.1.2'
+    id 'java-library'
+    id 'maven-publish'
+    id "io.freefair.lombok" version "9.5.0"
+    id 'io.spring.dependency-management' version '1.1.7'
 }
-ext.spring_boot_version = "3.1.2"
-ext.spring_cloud_version = "2022.0.3"
 
 group 'tech.aomi.common'
 version '2.0.0_6-SNAPSHOT'
 
-apply from: 'https://onegit.com/enterprise/public/raw/master/spring-libraries.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/idea.gradle'
-//apply from: 'https://onegit.com/enterprise/public/raw/master/publishing-with-source.gradle'
-apply from: 'https://onegit.com/enterprise/public/raw/master/publish-center.gradle'
-
 java {
-    sourceCompatibility = JavaVersion.VERSION_20
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(26)
+    }
 }
 
 repositories {
     mavenCentral()
     maven {
-        url "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+        url "https://nexus.stelarx.tech/repository/maven-snapshots/"
+        credentials {
+            username System.getenv('REPO_USERNAME')
+            password System.getenv('REPO_PASSWORD')
+        }
     }
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:${spring_boot_version}"
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${spring_cloud_version}"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:4.1.1"
     }
 }
 
 dependencies {
 
     implementation 'tech.aomi.common:exception:1.0.2-SNAPSHOT'
-    implementation 'tech.aomi.common:web:2.0.0_3-SNAPSHOT'
+    implementation 'tech.aomi.common:web:2.1.1_15-SNAPSHOT'
 
-    implementation spring_boot.web
-    implementation spring_boot.data_mongodb
-    implementation spring_cloud.oauth
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE'
+    implementation 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.6.8'
+}
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                allVariants {
+                    fromResolutionResult()
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = project.version.endsWith('-SNAPSHOT')
+                    ? 'https://nexus.stelarx.tech/repository/maven-snapshots/'
+                    : 'https://nexus.stelarx.tech/repository/maven-releases/'
+            credentials {
+                username System.getenv('REPO_USERNAME')
+                password System.getenv('REPO_PASSWORD')
+            }
+        }
+    }
 }

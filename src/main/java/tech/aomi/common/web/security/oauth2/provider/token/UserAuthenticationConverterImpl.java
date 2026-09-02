@@ -61,7 +61,7 @@ public class UserAuthenticationConverterImpl extends DefaultUserAuthenticationCo
         this.defaultAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList(StringUtils.arrayToCommaDelimitedString(defaultAuthorities));
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(Map<String, ?> map) {
+    protected Collection<? extends GrantedAuthority> getAuthorities(Map<String, ?> map) {
         if (!map.containsKey(AUTHORITIES)) {
             return defaultAuthorities;
         }
