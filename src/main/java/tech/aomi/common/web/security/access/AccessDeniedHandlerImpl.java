@@ -5,12 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import tech.aomi.common.exception.ErrorCode;
 import tech.aomi.common.web.controller.Result;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -25,14 +24,13 @@ import java.util.Objects;
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 
     @Autowired
-    private MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter;
+    private JsonMapper jsonMapper;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         Result result = new Result(ErrorCode.ACCESS_DENIED.getCode(), accessDeniedException.getMessage());
-        mappingJackson2HttpMessageConverter.write(Objects.requireNonNull(result.getBody()),
-                MediaType.APPLICATION_JSON,
-                new ServletServerHttpResponse(response));
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        jsonMapper.writeValue(response.getWriter(), Objects.requireNonNull(result.getBody()));
     }
 
 }
